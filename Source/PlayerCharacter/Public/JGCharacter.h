@@ -17,23 +17,31 @@ public:
 
 	AJGCharacter();
 
-protected:
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	USpringArmComponent* SpringArmComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	UCameraComponent* CameraComp;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-	float NormalSpeed;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-	float SprintSpeedMultiplier;
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
-	float SprintSpeed;
+	UFUNCTION(BlueprintPure, Category = "Health")
+	float GetHealth() const;
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	void AddHealth(float Amount);
+
+protected:
+
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "health")
+	float MaxHealth;
+
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "health")
+	float Health;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual float TakeDamage(
+		float DamageAmount,
+		struct FDamageEvent const& DamageEvent,
+		AController* EventInstigator,
+		AActor* DamageCauser) override;
 
 	UFUNCTION()
 	void Move(const FInputActionValue& value);
@@ -52,5 +60,13 @@ protected:
 	
 	UFUNCTION()
 	void StopSprint(const FInputActionValue& value);
+
+	void OnDeath();
+
+private:
+
+	float NormalSpeed;
+	float SprintSpeedMultiplier;
+	float SprintSpeed;
 
 };

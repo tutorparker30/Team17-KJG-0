@@ -1,4 +1,5 @@
 #include "HealingItem.h"
+#include "JGCharacter.h"
 
 AHealingItem::AHealingItem()
 {
@@ -8,6 +9,14 @@ AHealingItem::AHealingItem()
 
 void AHealingItem::ActivateItem(AActor* Activator)
 {
-	DestroyItem();
+	if (Activator && Activator->ActorHasTag("Player"))
+	{
+		if (AJGCharacter* PlayerCharacter = Cast<AJGCharacter>(Activator))
+		{
+			PlayerCharacter->AddHealth(HealAmount);
+		}
+
+		DestroyItem();
+	}
 }
 

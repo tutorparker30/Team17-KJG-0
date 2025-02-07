@@ -24,6 +24,9 @@ AJGCharacter::AJGCharacter()
 
 	GetCharacterMovement()->MaxWalkSpeed = NormalSpeed;
 
+	MaxHealth = 100.0f;
+	Health = MaxHealth;
+
 }
 
 void AJGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -146,5 +149,40 @@ void AJGCharacter::StopSprint(const FInputActionValue& value)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = NormalSpeed;
 	}
+}
+
+float AJGCharacter::GetHealth() const
+{
+	return Health;
+}
+
+void AJGCharacter::AddHealth(float Amount)
+{
+	Health = FMath::Clamp(Health + Amount, 0.0f, MaxHealth);
+	UE_LOG(LogTemp, Warning, TEXT("Health increased to: %f"), Health);
+}
+
+float AJGCharacter::TakeDamage(
+	float DamageAmount,
+	struct FDamageEvent const& DamageEvent,
+	AController* EventInstigator,
+	AActor* DamageCauser)
+{
+	float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	Health = FMath::Clamp(Health - DamageAmount, 0.0f, MaxHealth);
+	UE_LOG(LogTemp, Warning, TEXT("Health decreased to: %f"), Health);
+
+	if (Health <= 0.0f)
+	{
+		OnDeath();
+	}
+
+	return ActualDamage;
+}
+
+void AJGCharacter::OnDeath()
+{
+
 }
 

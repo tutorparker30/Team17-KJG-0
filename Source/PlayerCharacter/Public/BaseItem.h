@@ -16,6 +16,7 @@ public:
 	ABaseItem();
 
 protected:
+
 	virtual void OnItemOverlap(
 		UPrimitiveComponent* OverlappedComp,
 		AActor* OtherActor,
